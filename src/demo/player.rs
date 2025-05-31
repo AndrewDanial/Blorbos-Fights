@@ -109,7 +109,7 @@ impl FromWorld for PlayerAssets {
         let assets = world.resource::<AssetServer>();
         Self {
             ducky: assets.load_with_settings(
-                "images/ducky.png",
+                "images/blorbo.png",
                 |settings: &mut ImageLoaderSettings| {
                     // Use `nearest` image sampling to preserve pixel art style.
                     settings.sampler = ImageSampler::nearest();
