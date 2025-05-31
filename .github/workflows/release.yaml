@@ -28,16 +28,16 @@ env:
 
   # Whether to build and package a release for a given target platform.
   build_for_web: true
-  build_for_linux: true
-  build_for_windows: true
-  build_for_macos: true
+  build_for_linux: false
+  build_for_windows: false
+  build_for_macos: false
 
   # Whether to upload the packages produced by this workflow to a GitHub release.
   upload_to_github: true
 
   # The itch.io project to upload to in the format `user-name/project-name`.
   # There will be no upload to itch.io if this is commented out.
-  upload_to_itch: AndrewDanial/blorbos fights
+  upload_to_itch: AndrewDanial/Blorbos-Fights
 
   ############
   # ADVANCED #
@@ -46,7 +46,7 @@ env:
   # The ID of the app produced by this workflow.
   # Applies to macOS releases.
   # Must contain only A-Z, a-z, 0-9, hyphen, and period: <https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleidentifier>.
-  app_id: andrew-danial.blorbos-fights
+  app_id: andrew-danial.Blorbos-Fights
 
   # The base filename of the binary in the package produced by this workflow.
   # Applies to Windows, macOS, and Linux releases.
