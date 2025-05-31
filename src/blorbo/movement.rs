@@ -5,7 +5,7 @@ pub struct BlorboMovementPlugin;
 
 impl Plugin for BlorboMovementPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, random_move);
+        app.add_systems(Update, (random_move, apply_screen_wrap));
     }
 }
 
@@ -21,5 +21,18 @@ fn random_move(q: Query<(&mut Transform, &mut Velocity, &mut Blorbo)>, time: Res
                 y: rng.gen_range(-2.0..2.0),
             };
         }
+    }
+}
+
+fn apply_screen_wrap(
+    window: Single<&Window>,
+    mut wrap_query: Query<&mut Transform, With<ScreenWrap>>,
+) {
+    let size = window.size() + 16.0;
+    let half_size = size / 2.0;
+    for mut transform in &mut wrap_query {
+        let position = transform.translation.xy();
+        let wrapped = (position + half_size).rem_euclid(size) - half_size;
+        transform.translation = wrapped.extend(transform.translation.z);
     }
 }

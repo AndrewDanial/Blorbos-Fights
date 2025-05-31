@@ -11,6 +11,9 @@ pub struct Velocity {
     pub y: f32,
 }
 
+#[derive(Component)]
+pub struct ScreenWrap;
+
 pub struct BlorboPlugin;
 
 impl Plugin for BlorboPlugin {

@@ -35,8 +35,9 @@ fn spawn_sprite(mut cmd: Commands, asset_server: Res<AssetServer>) {
             timer: Timer::from_seconds(1.0, TimerMode::Repeating),
         },
         Velocity {
-            x: rng.gen_range(-5.0..5.0),
-            y: rng.gen_range(-5.0..5.0),
+            x: rng.gen_range(-2.0..2.0),
+            y: rng.gen_range(-2.0..2.0),
         },
+        ScreenWrap,
     ));
 }
