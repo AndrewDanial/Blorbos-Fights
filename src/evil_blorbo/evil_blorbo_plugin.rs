@@ -1,4 +1,5 @@
 use crate::blorbo::blorbo_plugin::Blorbo;
+use crate::shared::{Health, RepelRadius};
 use bevy::prelude::*;
 use rand::prelude::*;
 pub struct EvilBlorboPlugin;
@@ -13,10 +14,13 @@ pub struct EvilBlorbo;
 
 impl Plugin for EvilBlorboPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, (spawn_evil_blorbo, move_towards_blorbos))
-            .insert_resource::<SpawnTimer>(SpawnTimer {
-                timer: Timer::from_seconds(2.0, TimerMode::Repeating),
-            });
+        app.add_systems(
+            Update,
+            (spawn_evil_blorbo, move_towards_blorbos, avoid_others),
+        )
+        .insert_resource::<SpawnTimer>(SpawnTimer {
+            timer: Timer::from_seconds(2.0, TimerMode::Repeating),
+        });
     }
 }
 
@@ -39,6 +43,8 @@ fn spawn_evil_blorbo(
             },
             Transform::from_xyz(rand_x, rand_y, 0.0).with_scale(Vec3::splat(0.5)),
             EvilBlorbo,
+            Health(50),
+            RepelRadius(50.0),
         ));
     }
 }
@@ -55,5 +61,27 @@ fn move_towards_blorbos(
         }
 
         evil_t.translation += -direction.normalize() * 100.0 * time.delta_secs();
+    }
+}
+
+fn avoid_others(
+    mut evil_blorbos: Query<(&mut Transform, &RepelRadius, &EvilBlorbo)>,
+    time: Res<Time>,
+) {
+    let mut query = evil_blorbos.iter_combinations_mut();
+    let mut seperation_force = Vec2::ZERO;
+    while let Some(
+        [
+            (mut t1, RepelRadius(radius1), _),
+            (mut t2, RepelRadius(_), _),
+        ],
+    ) = query.fetch_next()
+    {
+        let distance = (t1.translation - t2.translation).length();
+        let vector_to_other = (t2.translation - t1.translation).normalize();
+        if distance < *radius1 {
+            t1.translation -= vector_to_other.normalize() * 100.0 * time.delta_secs();
+            t2.translation -= -vector_to_other.normalize() * 100.0 * time.delta_secs();
+        }
     }
 }
