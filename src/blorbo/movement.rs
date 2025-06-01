@@ -11,14 +11,19 @@ impl Plugin for BlorboMovementPlugin {
 
 fn random_move(q: Query<(&mut Transform, &mut Velocity, &mut Blorbo)>, time: Res<Time>) {
     let mut rng = rand::thread_rng();
+    let directions = [-1, 0, 1];
     for (mut transform, mut velocity, mut blorbo) in q {
-        transform.translation += Vec3::new(velocity.x, velocity.y, 0.0);
+        transform.translation +=
+            Vec3::new(velocity.x, velocity.y, 0.0) * velocity.speed * time.delta_secs();
         blorbo.timer.tick(time.delta());
         if blorbo.timer.finished() {
             info!("timer finished");
+            let x_dir = rng.gen_range(0..=2);
+            let y_dir = rng.gen_range(0..=2);
             *velocity = Velocity {
-                x: rng.gen_range(-2.0..2.0),
-                y: rng.gen_range(-2.0..2.0),
+                speed: 100.0,
+                x: directions[x_dir] as f32,
+                y: directions[y_dir] as f32,
             };
         }
     }

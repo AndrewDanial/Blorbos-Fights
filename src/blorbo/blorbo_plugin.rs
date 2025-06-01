@@ -7,6 +7,7 @@ pub struct Blorbo {
 
 #[derive(Component)]
 pub struct Velocity {
+    pub speed: f32,
     pub x: f32,
     pub y: f32,
 }
