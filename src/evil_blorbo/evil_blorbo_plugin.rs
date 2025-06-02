@@ -16,7 +16,7 @@ impl Plugin for EvilBlorboPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            (spawn_evil_blorbo, move_towards_blorbos, avoid_others),
+            (spawn_evil_blorbo, move_towards_blorbos, avoid_others, die),
         )
         .insert_resource::<SpawnTimer>(SpawnTimer {
             timer: Timer::from_seconds(2.0, TimerMode::Repeating),
@@ -41,7 +41,7 @@ fn spawn_evil_blorbo(
                 image: asset_server.load("images/evil_blorbo.png"),
                 ..default()
             },
-            Transform::from_xyz(rand_x, rand_y, 0.0).with_scale(Vec3::splat(0.5)),
+            Transform::from_xyz(rand_x, rand_y, -1.0).with_scale(Vec3::splat(0.5)),
             EvilBlorbo,
             Health(50),
             RepelRadius(50.0),
@@ -81,6 +81,14 @@ fn avoid_others(
         if distance < *radius1 {
             t1.translation -= vector_to_other.normalize() * 100.0 * time.delta_secs();
             t2.translation -= -vector_to_other.normalize() * 100.0 * time.delta_secs();
+        }
+    }
+}
+
+fn die(mut cmd: Commands, q: Query<(&Health, &EvilBlorbo, Entity)>) {
+    for (health, _, entity) in q {
+        if health.0 < 0 {
+            cmd.entity(entity).despawn();
         }
     }
 }

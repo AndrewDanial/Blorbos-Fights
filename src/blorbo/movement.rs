@@ -17,7 +17,6 @@ fn random_move(q: Query<(&mut Transform, &mut Velocity, &mut Blorbo)>, time: Res
             Vec3::new(velocity.x, velocity.y, 0.0) * velocity.speed * time.delta_secs();
         blorbo.timer.tick(time.delta());
         if blorbo.timer.finished() {
-            info!("timer finished");
             let x_dir = rng.gen_range(0..=2);
             let y_dir = rng.gen_range(0..=2);
             *velocity = Velocity {

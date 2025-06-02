@@ -1,7 +1,9 @@
-use crate::BlorboMovementPlugin;
+use super::attack::AttackPlugin;
+use super::movement::BlorboMovementPlugin;
 use crate::shared::Health;
 use bevy::prelude::*;
 use rand::prelude::*;
+
 #[derive(Component)]
 pub struct Blorbo {
     pub timer: Timer,
@@ -17,12 +19,16 @@ pub struct Velocity {
 #[derive(Component)]
 pub struct ScreenWrap;
 
+#[derive(Resource)]
+pub struct LightningAttackDmg(pub i32);
+
 pub struct BlorboPlugin;
 
 impl Plugin for BlorboPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(BlorboMovementPlugin)
-            .add_systems(Startup, spawn_blorbo);
+        app.add_plugins((BlorboMovementPlugin, AttackPlugin))
+            .add_systems(Startup, spawn_blorbo)
+            .insert_resource(LightningAttackDmg(30));
     }
 }
 
@@ -45,7 +51,7 @@ fn spawn_blorbo(mut cmd: Commands, asset_server: Res<AssetServer>) {
             y: directions[y_dir] as f32,
         },
         ScreenWrap,
-        Transform::from_xyz(0.0, 0.0, 0.0).with_scale(Vec3::splat(0.5)),
+        Transform::from_xyz(0.0, 0.0, -1.0).with_scale(Vec3::splat(0.5)),
         Health(100),
     ));
 }
