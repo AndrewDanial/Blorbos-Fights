@@ -69,7 +69,6 @@ fn avoid_others(
     time: Res<Time>,
 ) {
     let mut query = evil_blorbos.iter_combinations_mut();
-    let mut seperation_force = Vec2::ZERO;
     while let Some(
         [
             (mut t1, RepelRadius(radius1), _),
